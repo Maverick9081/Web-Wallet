@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-dotenv.config();
 import User from "../models/user.js";
 import postmark from "postmark";
 import jwt from "jsonwebtoken";
+dotenv.config();
 
 const client = new postmark.ServerClient(process.env.POSTMARK_API_KEY);
 
