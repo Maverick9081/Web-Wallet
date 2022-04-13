@@ -1,0 +1,3 @@
+#Web Wallet API
+
+This web Wallet API creates a web wallet for the user who signs up and airdrops 2000 ERC-20 tokens to that users newly created wallet address.User can transfer this ERC-20 token using this api. API uses ethers.js package to create a new wallet by using Randomly generated private key.When users transfers tokens they will be notified through email about that particular transaction.    
