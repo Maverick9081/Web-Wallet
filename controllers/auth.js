@@ -79,6 +79,8 @@ export const verify =async (req,res,next) =>{
             }
             else{
                 res.send("User already verified");
+                user.verified = true;
+                await user.save();
                 return;
             }    
         }
