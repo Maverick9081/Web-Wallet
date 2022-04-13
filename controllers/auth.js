@@ -23,7 +23,7 @@ export const postSignUp = async(req,res,next) =>{
         const address = wallet.address;
         
         const otp = Math.floor(Math.random()*999999);
-        const otpExpiration = Date.now() +1200000;
+        const otpExpiration = Date.now() +120000;
         const user = new User({
             email : email,
             password : hashedPassword,
@@ -57,20 +57,30 @@ export const verify =async (req,res,next) =>{
     try{
         const user = await User.findOne({ email:email })
         if(user){
-            if(Date.now() < user.otpExpiration){
-                if(otp == user.otp) {
-                    const address = user.address;
-                    airDrop(address);
-                    res.send("VeriFication Successful")
-                    return;
+            if(!user.verified){
+                if(Date.now() < user.otpExpiration){
+                    if(otp == user.otp) {
+                        const address = user.address;
+                        airDrop(address);
+                        res.send(`<h2>Verification Successful</h2>
+                                    <h3> your wallet address is 
+                                    ${address}  and Your account 
+                                    privateKey is ${user.privateKey}</h3>`
+                                )
+                        return;
+                    }
+                    else{
+                        res.status(400).send("invalid OTP,Please re-enter");
+                    }
                 }
                 else{
-                    res.status(400).send("invalid OTP,Please re-enter");
+                    res.status(400).send("OTP expired,please create a new one!");
                 }
             }
             else{
-                res.status(400).send("OTP expired,please create a new one!");
-            }
+                res.send("User already verified");
+                return;
+            }    
         }
         else{
             res.status(400).send("User not found");
@@ -90,7 +100,7 @@ export const postLogIn = async(req,res,next) =>{
         const user = await User.findOne({ email :email})
         const comparedPassword = await bcrypt.compare(password,user.password);
         if(comparedPassword){
-            const token = await jwt.sign({email : email,role : user.role},process.env.JWT_PRIVATE_KEY, { expiresIn : '1h' });
+            const token = jwt.sign({email : email,role : user.role},process.env.JWT_PRIVATE_KEY, { expiresIn : '1h' });
             user.token = token;
             return user.save();
         }
@@ -108,7 +118,7 @@ export const postGetOTP = async(req,res,next) => {
         const user = await User.findOne({ email:email})
         if(user){
             const otp = Math.floor(Math.random()*999999);
-            const otpExpiration = Date.now() +1200000;
+            const otpExpiration = Date.now() +120000;
             user.otp = otp;
             user.otpExpiration =otpExpiration;
 
