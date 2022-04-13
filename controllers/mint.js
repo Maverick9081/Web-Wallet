@@ -21,7 +21,8 @@ export async function airDrop(address){
 }
 
 export const transfer = async(req,res,next)=> {
-
+    
+    let toAddress;
     const bearerHeader = req.headers['authorization'];
     const bearer = bearerHeader.split(' ')[1];
     const user = jwt.verify(bearer, process.env.JWT_PRIVATE_KEY);
@@ -30,8 +31,15 @@ export const transfer = async(req,res,next)=> {
     const userDetail = await User.findOne({email :userEmail});
     
     const privateKey =userDetail.privateKey;
-    const toAddress = req.body.toAddress;
+    toAddress = req.body.toAddress;
     const amount = req.body.amount;
+    const toEmail = req.body.toEmail;
+    console.log(toAddress);
+    if(typeof toAddress == 'undefined')
+    {
+        const user = await User.findOne({ email:toEmail });
+        toAddress = user.address;
+    }
 
     const ABI = ["function transfer(address to, uint256 amount) public  returns (bool)"]
 
@@ -43,14 +51,13 @@ export const transfer = async(req,res,next)=> {
     const token = new ethers.Contract(process.env.TOKEN_ADDRESS,ABI,signer); 
     try{
         const tx =await token.transfer(toAddress,amount);
-        const txs = tx[1];
         await client.sendEmail(
             {
                 From: "abhishek.umedbhai@solulab.com",
                 To: userEmail,
                 Subject: "Your Transaction Details",
                 HtmlBody: `Your current Transaction details are as followed :
-                            ${txs} `
+                            ${tx[1]} `
             })
         res.send(tx);
     }
