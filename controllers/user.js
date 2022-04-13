@@ -9,9 +9,8 @@ export const getTransaction = async(req,res,next) => {
     const ABI = ["function transfer(address to, uint256 amount) public  returns (bool)"]
 
     const bearerHeader = req.headers['authorization'];
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    const user = jwt.verify(bearerToken, process.env.JWT_PRIVATE_KEY);
+    const bearer = bearerHeader.split(' ')[1];
+    const user = jwt.verify(bearer, process.env.JWT_PRIVATE_KEY);
 
     const userEmail = user.email;
     const userDetail = await User.findOne({email :userEmail});
@@ -32,9 +31,8 @@ export const getBalance = async (req,res,next) => {
     const ABI = ["function balanceOf(address account) public returns (uint256)"];
     
     const bearerHeader = req.headers['authorization'];
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    const user = jwt.verify(bearerToken, process.env.JWT_PRIVATE_KEY);
+    const bearer = bearerHeader.split(' ')[1];
+    const user = jwt.verify(bearer, process.env.JWT_PRIVATE_KEY);
 
     const userEmail = user.email;
     const userDetail = await User.findOne({email :userEmail});
