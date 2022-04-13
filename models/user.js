@@ -32,10 +32,15 @@ const userSchema = new Schema({
     address :{
         type : String
     },
-    
+
     role: {
         type : String,
         default : 0
+    },
+
+    verified : {
+        type : Boolean,
+        default : false
     }
 })
 
