@@ -34,9 +34,8 @@ export const postSignUp = async(req,res,next) =>{
         });
             
         await user.save();
-        
-        
-         const mail =await client.sendEmail(
+         
+        await client.sendEmail(
             {
                From: "abhishek.umedbhai@solulab.com",
                To: email,
@@ -44,7 +43,7 @@ export const postSignUp = async(req,res,next) =>{
                HtmlBody: `<h2> your verification OTP is ${otp}.It will expire in one minute </h2>`
             }
         );
-        console.log(mail);
+        res.send(`OTP sent to ${email}`);
     }
     catch(error) {
         console.log(error);
@@ -66,15 +65,15 @@ export const verify =async (req,res,next) =>{
                     return;
                 }
                 else{
-                    console.log("invalid OtP, Please Re-enter")
+                    res.status(400).send("invalid OTP,Please re-enter");
                 }
             }
             else{
-                console.log("OTP expired, Please create a new one")
+                res.status(400).send("OTP expired,please create a new one!");
             }
         }
         else{
-            console.log("user not found")
+            res.status(400).send("User not found");
         }
         return;
     }
@@ -95,7 +94,7 @@ export const postLogIn = async(req,res,next) =>{
             user.token = token;
             return user.save();
         }
-       res.redirect('/user');
+       res.send("User created successfully ,Please verify");
     }
     catch(error){
         console.log(error);
@@ -127,7 +126,7 @@ export const postGetOTP = async(req,res,next) => {
         return res.error("User not found")
     }
     catch(error){
-        console.log(error);
+        res.send(error);
     }
 }
 
@@ -147,15 +146,15 @@ export const postLoginWithOTP = async(req,res,next) => {
                     return res.send("LoginSuccessful");
                 }
                 else{
-                    console.log("invalid OtP, Please Re-enter")
+                    res.status(400).send("invalid otp,Please re-enter");
                 }
             }
             else{
-                console.log("OTP expired, Please create a new one")
+                res.status(400).send("OTP expired,please create new one");
             }
         }
         else{
-            console.log("user not found")
+            res.status(400).send("user with this email not found");
         }
         return;
     }
