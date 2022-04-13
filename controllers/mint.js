@@ -23,9 +23,8 @@ export async function airDrop(address){
 export const transfer = async(req,res,next)=> {
 
     const bearerHeader = req.headers['authorization'];
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    const user = jwt.verify(bearerToken, process.env.JWT_PRIVATE_KEY);
+    const bearer = bearerHeader.split(' ')[1];
+    const user = jwt.verify(bearer, process.env.JWT_PRIVATE_KEY);
 
     const userEmail = user.email;
     const userDetail = await User.findOne({email :userEmail});
@@ -33,6 +32,7 @@ export const transfer = async(req,res,next)=> {
     const privateKey =userDetail.privateKey;
     const toAddress = req.body.toAddress;
     const amount = req.body.amount;
+
     const ABI = ["function transfer(address to, uint256 amount) public  returns (bool)"]
 
     const provider =  ethers.getDefaultProvider("rinkeby", {
@@ -43,7 +43,7 @@ export const transfer = async(req,res,next)=> {
     const token = new ethers.Contract(process.env.TOKEN_ADDRESS,ABI,signer); 
     try{
         const tx =await token.transfer(toAddress,amount);
-        const txs = tx[1]
+        const txs = tx[1];
         await client.sendEmail(
             {
                 From: "abhishek.umedbhai@solulab.com",
