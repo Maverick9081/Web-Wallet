@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-dotenv.config();
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+dotenv.config();
 
 export const getTransaction = async(req,res,next) => {
     
