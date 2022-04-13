@@ -69,27 +69,33 @@ export const verify =async (req,res,next) =>{
                                 )
                         return;
                     }
-                    else{
+                    else
+                    {
                         res.status(400).send("invalid OTP,Please re-enter");
                     }
                 }
-                else{
+                else
+                {
                     res.status(400).send("OTP expired,please create a new one!");
                 }
             }
-            else{
+            else
+            {
                 res.send("User already verified");
                 user.verified = true;
                 await user.save();
                 return;
             }    
         }
-        else{
+        else
+        {
             res.status(400).send("User not found");
         }
         return;
     }
-    catch(error){
+    
+    catch(error)
+    {
         console.log(error);
     }
 }
