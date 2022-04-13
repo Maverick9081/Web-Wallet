@@ -10,13 +10,14 @@ export const verifyToken = async (req,res,next) => {
     if(typeof bearerHeader !== 'undefined') {
         const bearer = bearerHeader.split(' ')[1];
 
-        try{
+        try
+        {
             const user = jwt.verify(bearer, process.env.JWT_PRIVATE_KEY);
-                if(!user){
-                    res.status(403)
-                        .send('Yor are not logged in or User timeOut');
-                    return;
-                }
+            if(!user){
+                res.status(403)
+                    .send('Yor are not logged in or User timeOut');
+                return;
+            }
         }
         catch(error){
             console.log(error);
